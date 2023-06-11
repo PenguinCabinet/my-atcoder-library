@@ -2,7 +2,7 @@
 
 # 二分探索
 k以下のうち最大の要素のインデックスを返す。
-```
+```python
 def bs_max(x,k):
     l=-1
     r=len(x)
@@ -16,7 +16,7 @@ def bs_max(x,k):
 ```
 
 k以上のうち最小の要素のインデックスを返す。
-```
+```python
 def bs_min(x,k):
     l=-1
     r=len(x)

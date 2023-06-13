@@ -1,5 +1,12 @@
 # my-atcoder-library
 
+## 再帰関数のリミット
+再帰関数問題を解く場合。Pythonの再帰関数呼び出し制限に注意すること。
+```python
+import sys
+sys.setrecursionlimit(3*(10**5))
+```
+
 ## 二分探索
 k以下のうち最大の要素のインデックスを返す。
 ```python

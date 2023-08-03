@@ -49,3 +49,22 @@ def binary_search(x:list,k,cmp:function,key:function=lambda v,i:v[i]):
     return ok
 ```
 
+## 幅優先探索
+最短距離を幅優先探索で求めるもの
+```python
+from collections import deque
+def search_func(node,deep):
+    visited=set()
+    Q=deque()
+    Q.append(node)
+    while len(Q)>0:
+        temp=Q.popleft()
+        #TODO ここに現在の探索node tempにする処理を書く
+        visited.add(temp)
+        for e in ab[temp]:
+            if e in visited:
+                continue
+            Q.append(e)
+```
+
+

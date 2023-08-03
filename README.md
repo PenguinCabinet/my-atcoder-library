@@ -36,18 +36,6 @@ def bs_min(x,k):
     return r
 ```
 
-```python
-def binary_search(x:list,k,cmp:function,key:function=lambda v,i:v[i]):
-    ng=-1
-    ok=len(x)
-    while abs(ok-ng)>1:
-        m=(ok+ng)//2
-        if cmp(key(x,m),k):
-            ok=m
-        else:
-            ng=m
-    return ok
-```
 
 ## 幅優先探索
 最短距離を幅優先探索で求めるもの

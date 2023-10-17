@@ -65,4 +65,12 @@ def search_func(node,deep):
             Q.append(e)
 ```
 
-
+## 累積和
+### 0を含めない場合
+```
+sub_sum=itertools.accumulate(diff)
+```
+### 0を含める場合
+```
+sub_sum=[0]+itertools.accumulate(diff)
+```

@@ -13,8 +13,19 @@ https://zenn.dev/penguincabinet/articles/9c05e423e4eaab
 ## 再帰関数のリミット
 再帰関数問題を解く場合。Pythonの再帰関数呼び出し制限に注意すること。
 ```python
+#int(input())
+#list(input())
+#list(map(int,input().split()))
+#tuple(map(int,input().split()))
+#tuple(input().split())
 import sys
+import itertools
 sys.setrecursionlimit(3*(10**5))
+
+def main():
+    pass
+
+main()
 ```
 
 ## 二分探索

@@ -35,16 +35,21 @@ Kが配列Pに存在するか
 Iは、Kがある場所のインデックス
 ```
 I=bisect.bisect_left(P,K)
-if P[I]==K:
-    pass
+if 0<=I and I<len(P):
+    if P[I]==K:
+        pass
 ```
 配列Pにおける、**K以下の最大の数**がある場所のインデックス
 ```
 I=bisect.bisect_left(P,K)
+if 0<=I and I<len(P):
+    pass
 ```
 配列Pにおける、**K以上の最小の数**がある場所のインデックス
 ```
 I=bisect.bisect_right(P,K)
+if 0<=I and I<len(P):
+    pass
 ```
 
 ## 幅優先探索

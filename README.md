@@ -21,6 +21,7 @@ https://zenn.dev/penguincabinet/articles/9c05e423e4eaab
 #tuple(input().split())
 import sys
 import itertools
+import bisect
 sys.setrecursionlimit(3*(10**5))
 
 def main():

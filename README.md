@@ -79,3 +79,20 @@ sub_sum=itertools.accumulate(diff)
 ```
 sub_sum=[0]+itertools.accumulate(diff)
 ```
+
+## 素数列挙
+```python
+def Get_IsPrime_list(n):
+    A=[True for i in range(n+1)]
+    A[0]=False
+    A[1]=False
+
+    for i in range(2,n+1):
+        if A[i]==True:
+            temp=i*2
+            while temp<=n:
+                A[temp]=False
+                temp+=i
+
+    return A
+```

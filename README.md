@@ -22,7 +22,7 @@ https://zenn.dev/penguincabinet/articles/9c05e423e4eaab
 import sys
 import itertools
 import bisect
-sys.setrecursionlimit(3*(10**6))
+sys.setrecursionlimit(3*(10**8))
 
 def main():
     pass

@@ -23,6 +23,7 @@ import sys
 import itertools
 import bisect
 import math
+import collections
 sys.setrecursionlimit(3*(10**8))
 
 def main():

@@ -106,12 +106,14 @@ def Get_IsPrime_list(n):
 詳しくはスクロール
 ```
 class SegTree:
-    def __init__(self,N,func) -> None:
+    def __init__(self,N,func,init_elem=0) -> None:
         self.size=1
         while self.size<N:
             self.size*=2
-        self.data=[0 for i in range(2*self.size+1)]
+        self.init_elem=init_elem
+        self.data=[self.init_elem for i in range(2*self.size+1)]
         self.func=func
+        self.N=N
     
     def Update(self,pos,x):
         temp_pos=pos+self.size-1
@@ -127,7 +129,7 @@ class SegTree:
             b=self.size+1
             
         if r<=a or b<=l:
-            return 0
+            return self.init_elem
         if l<=a and b<=r:
             return self.data[u]
 
@@ -136,15 +138,18 @@ class SegTree:
         temp2=self.Query(l,r,m,b,2*u+1)
 
         return self.func(temp1,temp2)
+
+    def Get_nodes_arr(self) -> str:
+        return self.data[self.size:self.size+self.N]
 ```
 * l以上、r未満の範囲の**最大値**を求める
 * posのインデックスは1から始まり、Nで終わる。
 ```
-seg_tree=SegTree(N,max)
+seg_tree=SegTree(N,max,init_elem=-1*(10**10))
 ```
 
 * l以上、r未満の範囲の**合計値**を求める
 * posのインデックスは1から始まり、Nで終わる。
 ```
-seg_tree=SegTree(N,lambda v1,v2:v1+v2)
+seg_tree=SegTree(N,lambda v1,v2:v1+v2,init_elem=0)
 ```

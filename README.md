@@ -101,23 +101,25 @@ def Get_IsPrime_list(n):
 ```
 
 ## セグメント木
-* l以上、r未満の範囲の最大値を求める
+* l以上、r未満の範囲の特定の値を求める
 * posのインデックスは1から始まり、Nで終わる。
+詳しくはスクロール
 ```
 class SegTree:
-    def __init__(self,N) -> None:
+    def __init__(self,N,func) -> None:
         self.size=1
         while self.size<N:
             self.size*=2
         self.data=[0 for i in range(2*self.size+1)]
+        self.func=func
     
     def Update(self,pos,x):
         temp_pos=pos+self.size-1
         self.data[temp_pos]=x
         while temp_pos>=2:
             temp_pos//=2
-            self.data[temp_pos]=max(self.data[2*temp_pos],self.data[2*temp_pos+1])
-    
+            self.data[temp_pos]=self.func(self.data[2*temp_pos],self.data[2*temp_pos+1]) 
+
     def Query(self,l,r,a=None,b=None,u=1):
         if a is None:
             a=1
@@ -125,7 +127,7 @@ class SegTree:
             b=self.size+1
             
         if r<=a or b<=l:
-            return -1*(10**10)
+            return 0
         if l<=a and b<=r:
             return self.data[u]
 
@@ -133,5 +135,16 @@ class SegTree:
         temp1=self.Query(l,r,a,m,2*u)
         temp2=self.Query(l,r,m,b,2*u+1)
 
-        return max(temp1,temp2)
+        return self.func(temp1,temp2)
+```
+* l以上、r未満の範囲の**最大値**を求める
+* posのインデックスは1から始まり、Nで終わる。
+```
+seg_tree=SegTree(N,max)
+```
+
+* l以上、r未満の範囲の**合計値**を求める
+* posのインデックスは1から始まり、Nで終わる。
+```
+seg_tree=SegTree(N,lambda v1,v2:v1+v2)
 ```

@@ -105,7 +105,7 @@ def Get_IsPrime_list(n):
 * l以上、r未満の範囲の特定の値を求める。**l以上、r以下を求めたい場合は`Query(l,r+1)`で求める**
 
 詳しい使い方はスクロール
-```
+```python
 class SegTree:
     def __init__(self,N,func,init_elem=0) -> None:
         self.size=1
@@ -143,14 +143,15 @@ class SegTree:
     def Get_nodes_arr(self) -> str:
         return self.data[self.size:self.size+self.N]
 ```
+
 * l以上、r未満の範囲の**最大値**を求める
 * posのインデックスは1から始まり、Nで終わる。
-```
+```python
 seg_tree=SegTree(N,max,init_elem=-1*(10**10))
 ```
 
 * l以上、r未満の範囲の**合計値**を求める
 * posのインデックスは1から始まり、Nで終わる。
-```
+```python
 seg_tree=SegTree(N,lambda v1,v2:v1+v2,init_elem=0)
 ```

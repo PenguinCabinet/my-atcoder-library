@@ -101,9 +101,10 @@ def Get_IsPrime_list(n):
 ```
 
 ## セグメント木
-* l以上、r未満の範囲の特定の値を求める
-* posのインデックスは1から始まり、Nで終わる。
-詳しくはスクロール
+* posのインデックスは1から始まり、Nで終わる。nを含める！rangeでループする場合は、range(1,N+1)でやる
+* l以上、r未満の範囲の特定の値を求める。**l以上、r以下を求めたい場合は`Query(l,r+1)`で求める**
+
+詳しい使い方はスクロール
 ```
 class SegTree:
     def __init__(self,N,func,init_elem=0) -> None:

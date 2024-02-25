@@ -26,6 +26,7 @@ import math
 import collections
 import heapq
 sys.setrecursionlimit(3*(10**8))
+INF=1<<61
 
 def main():
     pass

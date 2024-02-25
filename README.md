@@ -74,6 +74,43 @@ def search_func(node,deep):
             Q.append(e)
 ```
 
+## ダイクストラ法
+重み付き有向グラフの最短経路を求める。node 1からスタート
+```python
+def Dijkstra_search_func(N,G):
+    decided=[False for i in range(N+1)]
+    cur=[INF for i in range(N+1)]
+
+    cur[1]=0
+
+    Q=[]
+    heapq.heappush(Q,(cur[1],1))
+    while len(Q)>0:
+        _,pos=heapq.heappop(Q)
+        if decided[pos]:
+            continue
+        decided[pos]=True
+
+        for g in G[pos]:
+            next_data,cost=tuple(g)
+            if cur[next_data]>cur[pos]+cost:
+                cur[next_data]=cur[pos]+cost
+                heapq.heappush(Q,(cur[next_data],next_data))
+    return cur
+```
+
+使用例
+```python
+    N,M=tuple(map(int,input().split()))
+    G=[[] for i in range(N+1)]
+    for i in range(M):
+        A,B,C=tuple(map(int,input().split()))
+        G[A].append([B,C])
+        G[B].append([A,C])
+    A=Dijkstra_search_func(N,G)
+```
+
+
 ## 累積和
 ### 0を含めない場合
 ```

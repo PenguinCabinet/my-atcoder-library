@@ -1,8 +1,34 @@
 # my-atcoder-library
 
+- [my-atcoder-library](#my-atcoder-library)
+  - [Atcoder-cliとonline-judge-toolsのチートシート](#atcoder-cliとonline-judge-toolsのチートシート)
+  - [①コンテストをローカルにクローン](#コンテストをローカルにクローン)
+  - [⑤テストケースの検証](#テストケースの検証)
+  - [高速化チェック](#高速化チェック)
+  - [再帰関数のリミット](#再帰関数のリミット)
+  - [二分探索](#二分探索)
+  - [幅優先探索](#幅優先探索)
+  - [ダイクストラ法](#ダイクストラ法)
+  - [累積和](#累積和)
+    - [0を含めない場合](#0を含めない場合)
+    - [0を含める場合](#0を含める場合)
+  - [素数列挙](#素数列挙)
+  - [セグメント木](#セグメント木)
+
+
 ## Atcoder-cliとonline-judge-toolsのチートシート
 
 https://zenn.dev/penguincabinet/articles/9c05e423e4eaab
+
+## ①コンテストをローカルにクローン
+```
+acc new abcN
+```
+
+## ⑤テストケースの検証
+```
+oj t -c "python main.py" -d ./tests/
+```
 
 ## 高速化チェック
 - [ ] 連想配列ではなく配列を使えるところは配列を使う
@@ -37,20 +63,20 @@ main()
 ## 二分探索
 Kが配列Pに存在するか    
 Iは、Kがある場所のインデックス
-```
+```python
 I=bisect.bisect_left(P,K)
 if 0<=I and I<len(P):
     if P[I]==K:
         pass
 ```
 配列Pにおける、**K以下の最大の数**がある場所のインデックス
-```
+```python
 I=bisect.bisect_left(P,K)
 if 0<=I and I<len(P):
     pass
 ```
 配列Pにおける、**K以上の最小の数**がある場所のインデックス
-```
+```python
 I=bisect.bisect_right(P,K)
 if 0<=I and I<len(P):
     pass
@@ -80,11 +106,13 @@ def search_func(node,deep):
 def Dijkstra_search_func(N,G):
     decided=[False for i in range(N+1)]
     cur=[INF for i in range(N+1)]
+    back=[-1 for i in range(N+1)]
 
-    cur[1]=0
+    cur[-1]=0
 
     Q=[]
-    heapq.heappush(Q,(cur[1],1))
+    back[-1]=-1
+    heapq.heappush(Q,(cur[-1],N))
     while len(Q)>0:
         _,pos=heapq.heappop(Q)
         if decided[pos]:
@@ -95,8 +123,13 @@ def Dijkstra_search_func(N,G):
             next_data,cost=tuple(g)
             if cur[next_data]>cur[pos]+cost:
                 cur[next_data]=cur[pos]+cost
+                back[next_data]=pos
                 heapq.heappush(Q,(cur[next_data],next_data))
-    return cur
+    root=[1]
+    while root[-1]!=N:
+        root.append(back[root[-1]])
+
+    return cur,root
 ```
 
 使用例

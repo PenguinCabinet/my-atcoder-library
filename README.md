@@ -85,7 +85,7 @@ if 0<=I and I<len(P):
 ## 幅優先探索
 最短距離を幅優先探索で求めるもの
 ```python
-def search_func(node,deep):
+def search_func(node,G):
     visited=set()
     Q=collections.deque()
     Q.append(node)
@@ -93,7 +93,7 @@ def search_func(node,deep):
         temp=Q.popleft()
         #TODO ここに現在の探索node tempにする処理を書く
         visited.add(temp)
-        for e in ab[temp]:
+        for e in G[temp]:
             if e in visited:
                 continue
             Q.append(e)

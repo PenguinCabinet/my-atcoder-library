@@ -2,13 +2,14 @@
 
 - [my-atcoder-library](#my-atcoder-library)
   - [Atcoder-cliとonline-judge-toolsのチートシート](#atcoder-cliとonline-judge-toolsのチートシート)
-  - [①コンテストをローカルにクローン](#コンテストをローカルにクローン)
-  - [⑤テストケースの検証](#テストケースの検証)
-  - [高速化チェック](#高速化チェック)
-  - [再帰関数のリミット](#再帰関数のリミット)
+    - [①コンテストをローカルにクローン](#コンテストをローカルにクローン)
+    - [⑤テストケースの検証](#テストケースの検証)
+  - [テンプレ](#テンプレ)
+  - [スペースに分けて、配列を一行で表示](#スペースに分けて配列を一行で表示)
   - [二分探索](#二分探索)
   - [幅優先探索](#幅優先探索)
   - [ダイクストラ法](#ダイクストラ法)
+  - [UnionFind](#unionfind)
   - [累積和](#累積和)
     - [0を含めない場合](#0を含めない場合)
     - [0を含める場合](#0を含める場合)
@@ -20,24 +21,17 @@
 
 https://zenn.dev/penguincabinet/articles/9c05e423e4eaab
 
-## ①コンテストをローカルにクローン
+### ①コンテストをローカルにクローン
 ```
 acc new abcN
 ```
 
-## ⑤テストケースの検証
+### ⑤テストケースの検証
 ```
 oj t -c "python main.py" -d ./tests/
 ```
 
-## 高速化チェック
-- [ ] 連想配列ではなく配列を使えるところは配列を使う
-- [ ] 配列の文字列の結合は`"".join` **ではなく** forループで足していく
-- [ ] 極力、変換しない(例えば、listへ)。変換する場合はループの外で！
-- [ ] 先頭への挿入・消去を高速(O(1))でやりたいなら、dequeをどうぞ
-- [ ] 無限ループに入った時は、インデックスがループ中に、ちゃんと加算されているかチェック
-
-## 再帰関数のリミット
+## テンプレ
 再帰関数問題を解く場合。Pythonの再帰関数呼び出し制限に注意すること。
 ```python
 #int(input())
@@ -54,10 +48,52 @@ import heapq
 sys.setrecursionlimit(3*(10**8))
 INF=1<<61
 
+def make_arr(N,elem=0):
+    return [elem for i in range(N)]
+
+def input_tuple_int():
+    return tuple(map(int,input().split()))
+def input_tuple():
+    return tuple(input().split())
+
+def input_list_int():
+    return list(map(int,input().split()))
+
+def input_lists_int(N):
+    ret=[]
+    for _ in range(N):
+        ret.append(list(map(int,input().split())))
+    ret=[[ret[j][i] for j in range(N)] for i in range(len(ret[0]))]
+
+    return tuple(ret)
+
+def Conv_graph_list(Nodes_len,from_list,to_list,dists=None,directed=True):
+    if len(from_list)!=len(to_list):
+        raise ValueError
+    G=make_arr(Nodes_len+1,[])
+    for i in range(len(from_list)):
+        if dists is None:
+            G[from_list[i]].append(to_list[i])
+            if directed:
+                G[to_list[i]].append(from_list[i])
+        else:
+            G[from_list[i]].append([to_list[i],dists[i]])
+            if directed:
+                G[to_list[i]].append([from_list[i],dists[i]])
+    return G
+
+def YesNo(v):
+    return "Yes" if v else "No"
+
 def main():
     pass
 
 main()
+```
+
+## スペースに分けて、配列を一行で表示
+```python
+print(*Ans)
 ```
 
 ## 二分探索
@@ -88,15 +124,15 @@ if 0<=I and I<len(P):
 def search_func(node,G):
     visited=set()
     Q=collections.deque()
-    Q.append(node)
+    Q.append([node,0])
     while len(Q)>0:
-        temp=Q.popleft()
+        temp,dist=Q.popleft()
         #TODO ここに現在の探索node tempにする処理を書く
         visited.add(temp)
         for e in G[temp]:
             if e in visited:
                 continue
-            Q.append(e)
+            Q.append([e,dist+1])
 ```
 
 ## ダイクストラ法
@@ -140,6 +176,35 @@ def Dijkstra_search_func(N,G):
         G[A].append([B,C])
         G[B].append([A,C])
     A=Dijkstra_search_func(N,G)
+```
+
+## UnionFind
+
+```python
+class Union_Find:
+    def __init__(self,N) -> None:
+        self.roots=[i for i in range(N+1)]
+        self.ranks=[1 for i in range(N+1)]
+    
+    def find(self,x):
+        if x!=self.roots[x]:
+            self.roots[x]=self.find(self.roots[x])
+        return self.roots[x]
+    def unite(self,x,y):
+        tempx=self.find(x)
+        tempy=self.find(y)
+        if tempx==tempy:
+            return
+        
+        if self.ranks[tempx]>self.ranks[tempy]:
+            self.roots[tempy]=tempx
+        elif self.ranks[tempx]<self.ranks[tempy]:
+            self.roots[tempx]=tempy
+        else:
+            self.roots[tempy]=tempx
+            self.ranks[tempx]+=1
+    def same(self,x,y):
+        return self.find(x)==self.find(y)
 ```
 
 

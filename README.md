@@ -85,10 +85,9 @@ if 0<=I and I<len(P):
 ## 幅優先探索
 最短距離を幅優先探索で求めるもの
 ```python
-from collections import deque
 def search_func(node,deep):
     visited=set()
-    Q=deque()
+    Q=collections.deque()
     Q.append(node)
     while len(Q)>0:
         temp=Q.popleft()

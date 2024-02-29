@@ -10,6 +10,7 @@
   - [幅優先探索](#幅優先探索)
   - [ダイクストラ法](#ダイクストラ法)
   - [UnionFind](#unionfind)
+  - [最大フロー問題](#最大フロー問題)
   - [累積和](#累積和)
     - [0を含めない場合](#0を含めない場合)
     - [0を含める場合](#0を含める場合)
@@ -67,20 +68,32 @@ def input_lists_int(N):
 
     return tuple(ret)
 
-def Conv_graph_list(Nodes_len,from_list,to_list,dists=None,directed=True):
+class Graph_Edge_t:
+    def __init__(self,to,dist,rev):
+        self.to = to
+        self.dist=dist
+        self.rev = rev
+
+def Conv_graph_list_base(Nodes_len,from_list,to_list,dists=None,directed=True,Add_rev=False,residual=False):
     if len(from_list)!=len(to_list):
         raise ValueError
-    G=make_arr(Nodes_len+1,[])
+    G=[[] for i in range(Nodes_len+1)]
     for i in range(len(from_list)):
-        if dists is None:
-            G[from_list[i]].append(to_list[i])
-            if directed:
-                G[to_list[i]].append(from_list[i])
-        else:
-            G[from_list[i]].append([to_list[i],dists[i]])
-            if directed:
-                G[to_list[i]].append([from_list[i],dists[i]])
+        
+        dist=dists[i] if dists is not None else None
+        temp_to=Graph_Edge_t(to_list[i],dist,len(G[to_list[i]]) if Add_rev else None)
+        temp_from=Graph_Edge_t(from_list[i],dist if not residual else 0,len(G[from_list[i]]) if Add_rev else None)
+
+        G[from_list[i]].append(temp_to)
+        if not directed:
+            G[to_list[i]].append(temp_from)
+
     return G
+def Conv_graph_list(Nodes_len,from_list,to_list,dists,directed=False):
+    return Conv_graph_list_base(Nodes_len,from_list,to_list,dists,directed=directed,residual=False,Add_rev=False)
+
+def Conv_graph_list_residual(Nodes_len,from_list,to_list,dists):
+    return Conv_graph_list_base(Nodes_len,from_list,to_list,dists,directed=False,residual=True,Add_rev=True)
 
 def YesNo(v):
     return "Yes" if v else "No"
@@ -205,6 +218,36 @@ class Union_Find:
             self.ranks[tempx]+=1
     def same(self,x,y):
         return self.find(x)==self.find(y)
+```
+
+## 最大フロー問題
+```python
+def dfs(pos,goal,F:int,G,visited:set):
+    if pos==goal:
+        return F
+    visited.add(pos)
+    for e in G[pos]:
+        if e.to in visited:
+            continue
+        if e.dist==0:
+            continue
+        Flow=dfs(e.to,goal,min(F,e.dist),G,visited)
+        if Flow>=1:
+            e.dist-=Flow
+            G[e.to][e.rev].dist+=Flow
+            return Flow
+
+    return 0
+
+def max_flow(start_data,end_data,G):
+    Ans=0
+    while True:
+        ret=dfs(start_data,end_data,INF,G,set())
+        if ret==0:
+            break
+        Ans+=ret
+    return Ans
+
 ```
 
 

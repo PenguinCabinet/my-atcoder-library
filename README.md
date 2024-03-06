@@ -7,10 +7,17 @@
   - [テンプレ](#テンプレ)
   - [スペースに分けて、配列を一行で表示](#スペースに分けて配列を一行で表示)
   - [二分探索](#二分探索)
-  - [幅優先探索](#幅優先探索)
-  - [ダイクストラ法](#ダイクストラ法)
-  - [UnionFind](#unionfind)
-  - [最大フロー問題](#最大フロー問題)
+    - [探索した値が存在するか](#探索した値が存在するか)
+    - [探索したい数値以下のうち最大の数値を探索](#探索したい数値以下のうち最大の数値を探索)
+    - [探索したい数値未満のうち最大の数値を探索](#探索したい数値未満のうち最大の数値を探索)
+    - [探索したい数値以上のうち最小の数値を探索](#探索したい数値以上のうち最小の数値を探索)
+    - [探索したい数値を超えるもののうち最小の数値を探索](#探索したい数値を超えるもののうち最小の数値を探索)
+    - [関数に対する二分探索](#関数に対する二分探索)
+  - [グラフ](#グラフ)
+    - [幅優先探索](#幅優先探索)
+    - [ダイクストラ法](#ダイクストラ法)
+    - [UnionFind](#unionfind)
+    - [最大フロー問題](#最大フロー問題)
   - [累積和](#累積和)
     - [0を含めない場合](#0を含めない場合)
     - [0を含める場合](#0を含める場合)
@@ -110,6 +117,104 @@ print(*Ans)
 ```
 
 ## 二分探索
+
+### 探索した値が存在するか
+存在した場合、インデックスを返す
+
+存在しない場合、Noneを返す。
+
+```python
+def my_bisect_index(A:list[int],op:str,X:int):
+    def index(a, x):
+        'Locate the leftmost value exactly equal to x'
+        i = bisect.bisect_left(a, x)
+        if i != len(a) and a[i] == x:
+            return i
+        return None
+
+    def find_lt(a, x):
+        'Find rightmost value less than x'
+        i = bisect.bisect_left(a, x)
+        if i:
+            return i-1
+        return None
+
+    def find_le(a, x):
+        'Find rightmost value less than or equal to x'
+        i = bisect.bisect_right(a, x)
+        if i:
+            return i-1
+        return None
+
+    def find_gt(a, x):
+        'Find leftmost value greater than x'
+        i = bisect.bisect_right(a, x)
+        if i != len(a):
+            return i
+        return None
+
+    def find_ge(a, x):
+        'Find leftmost item greater than or equal to x'
+        i = bisect.bisect_left(a, x)
+        if i != len(a):
+            return i
+        return None
+    
+    if op=="==":
+        return index(A,X)
+    elif op=="<":
+        return find_lt(A,X)
+    elif op=="<=":
+        return find_le(A,X)
+    elif op==">":
+        return find_gt(A,X)
+    elif op==">=":
+        return find_ge(A,X)
+    else:
+        raise ValueError   
+```
+
+### 探索したい数値以下のうち最大の数値を探索
+
+```python
+my_bisect_index(arr,"<=",2)
+```
+
+### 探索したい数値未満のうち最大の数値を探索
+
+```python
+my_bisect_index(arr,"<",2)
+```
+
+### 探索したい数値以上のうち最小の数値を探索
+
+```python
+my_bisect_index(arr,">=",2)
+```
+
+### 探索したい数値を超えるもののうち最小の数値を探索
+```python
+my_bisect_index(arr,">",2)
+```
+
+### 関数に対する二分探索
+
+```python
+    L=1
+    R=100000000
+    m=0
+    while L<R:
+        m=(L+R)//2
+        temp=check(m)
+        if temp>=K:
+            R=m
+        else:
+            L=m+1
+    print(L)
+```
+
+
+
 Kが配列Pに存在するか    
 Iは、Kがある場所のインデックス
 ```python
@@ -131,7 +236,9 @@ if 0<=I and I<len(P):
     pass
 ```
 
-## 幅優先探索
+## グラフ
+
+### 幅優先探索
 最短距離を幅優先探索で求めるもの
 ```python
 def search_func(node,G):
@@ -148,7 +255,7 @@ def search_func(node,G):
             Q.append([e,dist+1])
 ```
 
-## ダイクストラ法
+### ダイクストラ法
 重み付き有向グラフの最短経路を求める。node 1からスタート
 ```python
 def Dijkstra_search_func(N,G):
@@ -191,7 +298,7 @@ def Dijkstra_search_func(N,G):
     A=Dijkstra_search_func(N,G)
 ```
 
-## UnionFind
+### UnionFind
 
 ```python
 class Union_Find:
@@ -220,7 +327,7 @@ class Union_Find:
         return self.find(x)==self.find(y)
 ```
 
-## 最大フロー問題
+### 最大フロー問題
 ```python
 def dfs(pos,goal,F:int,G,visited:set):
     if pos==goal:

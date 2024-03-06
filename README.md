@@ -39,7 +39,6 @@ oj t -c "python main.py" -d ./tests/
 ```
 
 ## テンプレ
-再帰関数問題を解く場合。Pythonの再帰関数呼び出し制限に注意すること。
 ```python
 #int(input())
 #list(input())

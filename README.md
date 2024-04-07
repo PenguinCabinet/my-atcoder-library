@@ -215,7 +215,7 @@ my_bisect_index(arr,">",2)
 ### 幅優先探索
 最短距離を幅優先探索で求めるもの
 ```python
-def search_func(node,G):
+def BFS(node,G):
     visited=set()
     Q=collections.deque()
     Q.append([node,0])

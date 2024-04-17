@@ -210,6 +210,22 @@ my_bisect_index(arr,">",2)
     print(L)
 ```
 
+## 部分文字列(部分列)
+`s1`からいくつかの文字を取り除き、残った文字を**元の順番で並べ**`s2`になるか判定する。
+
+
+```python
+def check_sub_str(s1,s2):
+    i=0
+    for s in s2:
+        while i<len(s1) and s1[i]!=s:
+            i+=1
+        if i==len(s1):
+            return False
+        i+=1
+    return True
+```
+
 ## グラフ
 
 ### 幅優先探索

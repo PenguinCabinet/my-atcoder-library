@@ -13,6 +13,7 @@
     - [探索したい数値を超えるもののうち最小の数値を探索](#探索したい数値を超えるもののうち最小の数値を探索)
     - [関数に対する二分探索](#関数に対する二分探索)
   - [部分文字列(部分列)](#部分文字列部分列)
+  - [優先度付きキュー](#優先度付きキュー)
   - [グラフ](#グラフ)
     - [幅優先探索](#幅優先探索)
     - [ダイクストラ法](#ダイクストラ法)
@@ -214,6 +215,13 @@ my_bisect_index(arr,">",2)
 ## 部分文字列(部分列)
 `s1`からいくつかの文字を取り除き、残った文字を**元の順番で並べ**`s2`になるか判定する。
 
+例
+```python
+s1="ABCDE"
+s2="AD"
+#True
+```
+
 
 ```python
 def check_sub_str(s1,s2):
@@ -226,6 +234,37 @@ def check_sub_str(s1,s2):
         i+=1
     return True
 ```
+
+## 優先度付きキュー
+最小値から取り出す。
+```python
+a = [1,6,8,0,-1]
+heapq.heapify(a)
+heapq.heappop(a)
+heapq.heappush(a,-2)
+```
+
+最大値から取り出す。
+```python
+
+def heapify_max(a):
+    for i in range(len(a)):
+        a*=-1
+    heapq.heapify(a)
+
+def heappop_max(a):
+    return -heapq.heappop(a)
+
+def heappush_max(a,x):
+    return heapq.heappush(a,-2)
+
+a = [1,6,8,0,-1]
+heapq.heapify(a)
+heapq.heappop(a)
+heapq.heappush(a,-2)
+```
+
+
 
 ## グラフ
 

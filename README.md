@@ -53,6 +53,7 @@ import bisect
 import math
 import collections
 import heapq
+import atcoder
 sys.setrecursionlimit(3*(10**8))
 INF=1<<61
 
@@ -74,33 +75,6 @@ def input_lists_int(N):
     ret=[[ret[j][i] for j in range(N)] for i in range(len(ret[0]))]
 
     return tuple(ret)
-
-class Graph_Edge_t:
-    def __init__(self,to,dist,rev):
-        self.to = to
-        self.dist=dist
-        self.rev = rev
-
-def Conv_graph_list_base(Nodes_len,from_list,to_list,dists=None,directed=True,Add_rev=False,residual=False):
-    if len(from_list)!=len(to_list):
-        raise ValueError
-    G=[[] for i in range(Nodes_len+1)]
-    for i in range(len(from_list)):
-        
-        dist=dists[i] if dists is not None else None
-        temp_to=Graph_Edge_t(to_list[i],dist,len(G[to_list[i]]) if Add_rev else None)
-        temp_from=Graph_Edge_t(from_list[i],dist if not residual else 0,len(G[from_list[i]]) if Add_rev else None)
-
-        G[from_list[i]].append(temp_to)
-        if not directed:
-            G[to_list[i]].append(temp_from)
-
-    return G
-def Conv_graph_list(Nodes_len,from_list,to_list,dists,directed=False):
-    return Conv_graph_list_base(Nodes_len,from_list,to_list,dists,directed=directed,residual=False,Add_rev=False)
-
-def Conv_graph_list_residual(Nodes_len,from_list,to_list,dists):
-    return Conv_graph_list_base(Nodes_len,from_list,to_list,dists,directed=False,residual=True,Add_rev=True)
 
 def YesNo(v):
     return "Yes" if v else "No"

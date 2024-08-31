@@ -31,12 +31,12 @@
 https://zenn.dev/penguincabinet/articles/9c05e423e4eaab
 
 ### ①コンテストをローカルにクローン
-```
+```bash
 acc new abcN
 ```
 
 ### ⑤テストケースの検証
-```
+```bash
 oj t -c "python main.py" -d ./tests/
 ```
 

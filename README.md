@@ -520,12 +520,12 @@ def max_flow(start_data,end_data,G):
 
 ## 累積和
 ### 0を含めない場合
-```
-sub_sum=itertools.accumulate(diff)
+```python
+sub_sum=list(itertools.accumulate(diff))
 ```
 ### 0を含める場合
-```
-sub_sum=[0]+itertools.accumulate(diff)
+```python
+sub_sum=[0]+list(itertools.accumulate(diff))
 ```
 
 ## 素数列挙

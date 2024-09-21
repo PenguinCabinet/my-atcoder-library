@@ -6,11 +6,8 @@
     - [⑤テストケースの検証](#テストケースの検証)
   - [テンプレ](#テンプレ)
   - [スペースに分けて、配列を一行で表示](#スペースに分けて配列を一行で表示)
+  - [順序付きソート](#順序付きソート)
   - [二分探索](#二分探索)
-    - [探索したい数値以下のうち最大の数値を探索](#探索したい数値以下のうち最大の数値を探索)
-    - [探索したい数値未満のうち最大の数値を探索](#探索したい数値未満のうち最大の数値を探索)
-    - [探索したい数値以上のうち最小の数値を探索](#探索したい数値以上のうち最小の数値を探索)
-    - [探索したい数値を超えるもののうち最小の数値を探索](#探索したい数値を超えるもののうち最小の数値を探索)
     - [関数に対する二分探索](#関数に対する二分探索)
   - [部分文字列(部分列)](#部分文字列部分列)
   - [優先度付きキュー](#優先度付きキュー)
@@ -41,290 +38,20 @@ oj t -c "python main.py" -d ./tests/
 ```
 
 ## テンプレ
-```python
-#int(input())
-#list(input())
-#list(map(int,input().split()))
-#tuple(map(int,input().split()))
-#tuple(input().split())
-import sys
-import itertools
-import bisect
-import math
-import collections
-import heapq
-import atcoder
-sys.setrecursionlimit(3*(10**8))
-INF=1<<61
-
-def make_arr(N,elem=0):
-    return [elem for i in range(N)]
-
-def input_tuple_int():
-    return tuple(map(int,input().split()))
-def input_tuple():
-    return tuple(input().split())
-
-def input_list_int():
-    return list(map(int,input().split()))
-
-def input_lists_int(N):
-    ret=[]
-    for _ in range(N):
-        ret.append(list(map(int,input().split())))
-    ret=[[ret[j][i] for j in range(N)] for i in range(len(ret[0]))]
-
-    return tuple(ret)
-
-def YesNo(v):
-    return "Yes" if v else "No"
-
-def main():
-    pass
-
-main()
-```
+[main.py](src/main.py)
 
 ## スペースに分けて、配列を一行で表示
 ```python
-print(*Ans)
+print_list(Ans)
 ```
 
 ## 順序付きソート
-```python
-# https://github.com/tatyam-prime/SortedSet/blob/main/SortedSet.py
-import math
-from bisect import bisect_left, bisect_right
-from typing import Generic, Iterable, Iterator, List, Tuple, TypeVar, Optional
-T = TypeVar('T')
-
-class SortedSet(Generic[T]):
-    BUCKET_RATIO = 16
-    SPLIT_RATIO = 24
-    
-    def __init__(self, a: Iterable[T] = []) -> None:
-        "Make a new SortedSet from iterable. / O(N) if sorted and unique / O(N log N)"
-        a = list(a)
-        n = len(a)
-        if any(a[i] > a[i + 1] for i in range(n - 1)):
-            a.sort()
-        if any(a[i] >= a[i + 1] for i in range(n - 1)):
-            a, b = [], a
-            for x in b:
-                if not a or a[-1] != x:
-                    a.append(x)
-        n = self.size = len(a)
-        num_bucket = int(math.ceil(math.sqrt(n / self.BUCKET_RATIO)))
-        self.a = [a[n * i // num_bucket : n * (i + 1) // num_bucket] for i in range(num_bucket)]
-
-    def __iter__(self) -> Iterator[T]:
-        for i in self.a:
-            for j in i: yield j
-
-    def __reversed__(self) -> Iterator[T]:
-        for i in reversed(self.a):
-            for j in reversed(i): yield j
-    
-    def __eq__(self, other) -> bool:
-        return list(self) == list(other)
-    
-    def __len__(self) -> int:
-        return self.size
-    
-    def __repr__(self) -> str:
-        return "SortedSet" + str(self.a)
-    
-    def __str__(self) -> str:
-        s = str(list(self))
-        return "{" + s[1 : len(s) - 1] + "}"
-
-    def _position(self, x: T) -> Tuple[List[T], int, int]:
-        "return the bucket, index of the bucket and position in which x should be. self must not be empty."
-        for i, a in enumerate(self.a):
-            if x <= a[-1]: break
-        return (a, i, bisect_left(a, x))
-
-    def __contains__(self, x: T) -> bool:
-        if self.size == 0: return False
-        a, _, i = self._position(x)
-        return i != len(a) and a[i] == x
-
-    def add(self, x: T) -> bool:
-        "Add an element and return True if added. / O(√N)"
-        if self.size == 0:
-            self.a = [[x]]
-            self.size = 1
-            return True
-        a, b, i = self._position(x)
-        if i != len(a) and a[i] == x: return False
-        a.insert(i, x)
-        self.size += 1
-        if len(a) > len(self.a) * self.SPLIT_RATIO:
-            mid = len(a) >> 1
-            self.a[b:b+1] = [a[:mid], a[mid:]]
-        return True
-    
-    def _pop(self, a: List[T], b: int, i: int) -> T:
-        ans = a.pop(i)
-        self.size -= 1
-        if not a: del self.a[b]
-        return ans
-
-    def discard(self, x: T) -> bool:
-        "Remove an element and return True if removed. / O(√N)"
-        if self.size == 0: return False
-        a, b, i = self._position(x)
-        if i == len(a) or a[i] != x: return False
-        self._pop(a, b, i)
-        return True
-    
-    def lt(self, x: T) -> Optional[T]:
-        "Find the largest element < x, or None if it doesn't exist."
-        for a in reversed(self.a):
-            if a[0] < x:
-                return a[bisect_left(a, x) - 1]
-
-    def le(self, x: T) -> Optional[T]:
-        "Find the largest element <= x, or None if it doesn't exist."
-        for a in reversed(self.a):
-            if a[0] <= x:
-                return a[bisect_right(a, x) - 1]
-
-    def gt(self, x: T) -> Optional[T]:
-        "Find the smallest element > x, or None if it doesn't exist."
-        for a in self.a:
-            if a[-1] > x:
-                return a[bisect_right(a, x)]
-
-    def ge(self, x: T) -> Optional[T]:
-        "Find the smallest element >= x, or None if it doesn't exist."
-        for a in self.a:
-            if a[-1] >= x:
-                return a[bisect_left(a, x)]
-    
-    def __getitem__(self, i: int) -> T:
-        "Return the i-th element."
-        if i < 0:
-            for a in reversed(self.a):
-                i += len(a)
-                if i >= 0: return a[i]
-        else:
-            for a in self.a:
-                if i < len(a): return a[i]
-                i -= len(a)
-        raise IndexError
-    
-    def pop(self, i: int = -1) -> T:
-        "Pop and return the i-th element."
-        if i < 0:
-            for b, a in enumerate(reversed(self.a)):
-                i += len(a)
-                if i >= 0: return self._pop(a, ~b, i)
-        else:
-            for b, a in enumerate(self.a):
-                if i < len(a): return self._pop(a, b, i)
-                i -= len(a)
-        raise IndexError
-    
-    def index(self, x: T) -> int:
-        "Count the number of elements < x."
-        ans = 0
-        for a in self.a:
-            if a[-1] >= x:
-                return ans + bisect_left(a, x)
-            ans += len(a)
-        return ans
-
-    def index_right(self, x: T) -> int:
-        "Count the number of elements <= x."
-        ans = 0
-        for a in self.a:
-            if a[-1] > x:
-                return ans + bisect_right(a, x)
-            ans += len(a)
-        return ans
-```
+[SortedSet.py](src/SortedSet.py)
 
 
 ## 二分探索
 
-条件に該当するものが存在した場合、インデックスを返す
-
-存在しない場合、Noneを返す。
-
-```python
-def my_bisect_index(A:list[int],op:str,X:int):
-    def index(a, x):
-        'Locate the leftmost value exactly equal to x'
-        i = bisect.bisect_left(a, x)
-        if i != len(a) and a[i] == x:
-            return i
-        return None
-
-    def find_lt(a, x):
-        'Find rightmost value less than x'
-        i = bisect.bisect_left(a, x)
-        if i:
-            return i-1
-        return None
-
-    def find_le(a, x):
-        'Find rightmost value less than or equal to x'
-        i = bisect.bisect_right(a, x)
-        if i:
-            return i-1
-        return None
-
-    def find_gt(a, x):
-        'Find leftmost value greater than x'
-        i = bisect.bisect_right(a, x)
-        if i != len(a):
-            return i
-        return None
-
-    def find_ge(a, x):
-        'Find leftmost item greater than or equal to x'
-        i = bisect.bisect_left(a, x)
-        if i != len(a):
-            return i
-        return None
-    
-    if op=="==":
-        return index(A,X)
-    elif op=="<":
-        return find_lt(A,X)
-    elif op=="<=":
-        return find_le(A,X)
-    elif op==">":
-        return find_gt(A,X)
-    elif op==">=":
-        return find_ge(A,X)
-    else:
-        raise ValueError   
-```
-
-### 探索したい数値以下のうち最大の数値を探索
-
-```python
-my_bisect_index(arr,"<=",2)
-```
-
-### 探索したい数値未満のうち最大の数値を探索
-
-```python
-my_bisect_index(arr,"<",2)
-```
-
-### 探索したい数値以上のうち最小の数値を探索
-
-```python
-my_bisect_index(arr,">=",2)
-```
-
-### 探索したい数値を超えるもののうち最小の数値を探索
-```python
-my_bisect_index(arr,">",2)
-```
+[my_bisect](src/my_bisect.py)
 
 ### 関数に対する二分探索
 
@@ -354,15 +81,7 @@ s2="AD"
 
 
 ```python
-def check_sub_str(s1,s2):
-    i=0
-    for s in s2:
-        while i<len(s1) and s1[i]!=s:
-            i+=1
-        if i==len(s1):
-            return False
-        i+=1
-    return True
+s2 in s1
 ```
 
 ## 優先度付きキュー
@@ -547,56 +266,24 @@ def Get_IsPrime_list(n):
 
 ## セグメント木
 * posのインデックスは1から始まり、Nで終わる。nを含める！rangeでループする場合は、range(1,N+1)でやる
-* l以上、r未満の範囲の特定の値を求める。**l以上、r以下を求めたい場合は`Query(l,r+1)`で求める**
+* l以上、r未満の範囲の特定の値を求める。**l以上、r以下を求めたい場合は`tree.prod(l, r+1)`で求める**
 
-詳しい使い方はスクロール
 ```python
-class SegTree:
-    def __init__(self,N,func,init_elem=0) -> None:
-        self.size=1
-        while self.size<N:
-            self.size*=2
-        self.init_elem=init_elem
-        self.data=[self.init_elem for i in range(2*self.size+1)]
-        self.func=func
-        self.N=N
-    
-    def Update(self,pos,x):
-        temp_pos=pos+self.size-1
-        self.data[temp_pos]=x
-        while temp_pos>=2:
-            temp_pos//=2
-            self.data[temp_pos]=self.func(self.data[2*temp_pos],self.data[2*temp_pos+1]) 
+tree = atcoder.segtree.SegTree(max, -INF, [1, 2, 3, 4])
 
-    def Query(self,l,r,a=None,b=None,u=1):
-        if a is None:
-            a=1
-        if b is None:
-            b=self.size+1
-            
-        if r<=a or b<=l:
-            return self.init_elem
-        if l<=a and b<=r:
-            return self.data[u]
-
-        m=(a+b)//2
-        temp1=self.Query(l,r,a,m,2*u)
-        temp2=self.Query(l,r,m,b,2*u+1)
-
-        return self.func(temp1,temp2)
-
-    def Get_nodes_arr(self) -> str:
-        return self.data[self.size:self.size+self.N]
+tree.prod(0, 2)
+tree.set(0,1)
+tree.get(0)
 ```
 
 * l以上、r未満の範囲の**最大値**を求める
 * posのインデックスは1から始まり、Nで終わる。
 ```python
-seg_tree=SegTree(N,max,init_elem=-1*(10**10))
+tree = atcoder.segtree.SegTree(max, -INF, [1, 2, 3, 4])
 ```
 
 * l以上、r未満の範囲の**合計値**を求める
 * posのインデックスは1から始まり、Nで終わる。
 ```python
-seg_tree=SegTree(N,lambda v1,v2:v1+v2,init_elem=0)
+tree = atcoder.segtree.SegTree(lambda a, b: a + b, 0, [1, 2, 3, 4])
 ```

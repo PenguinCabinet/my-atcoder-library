@@ -50,8 +50,11 @@ print_list(Ans)
 
 
 ## 二分探索
+```python
+bisect_index(arr,x)
+bisect_find_lt(arr,x)
+```
 
-[my_bisect](src/my_bisect.py)
 
 ### 関数に対する二分探索
 
@@ -70,18 +73,20 @@ print_list(Ans)
 ```
 
 ## 部分文字列(部分列)
-`s1`からいくつかの文字を取り除き、残った文字を**元の順番で並べ**`s2`になるか判定する。
 
 例
 ```python
-s1="ABCDE"
-s2="AD"
+s1="AC"
+s2="ABCDE"
+#False
+
+s1="AB"
+s2="ABCDE"
 #True
 ```
 
-
 ```python
-s2 in s1
+check_sub_str(s1,s2)
 ```
 
 ## 優先度付きキュー

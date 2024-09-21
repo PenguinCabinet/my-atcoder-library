@@ -29,3 +29,4 @@ assert input_tuple(int) == (1, 2)
 
 assert check_sub_str("BC", "ABCDE") == True
 assert check_sub_str("AD", "ABCDE") == False
+assert check_sub_str("AC", "ABCDE") == False

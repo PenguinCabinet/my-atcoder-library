@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 for e in os.listdir("test"):
-    os.system("python -B test/" + e)
+    subprocess.call("python -B test/" + e, shell=True)

@@ -10,7 +10,7 @@ assert make_arr(3) == [0, 0, 0]
 
 temp = make_arr(3, [0])
 temp[0][0] = 1
-assert temp == [[3], [0], [0]]
+assert temp == [[1], [0], [0]]
 
 
 sys.stdin = io.StringIO("1 A")

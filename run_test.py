@@ -1,5 +1,11 @@
 import os
 import subprocess
 
+flags = True
 for e in os.listdir("test"):
-    subprocess.call("python -B test/" + e, shell=True)
+    code = subprocess.call("python -B test/" + e, shell=True)
+    if code != 0:
+        flags = False
+
+if not flags:
+    raise AssertionError

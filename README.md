@@ -19,6 +19,7 @@
   - [累積和](#累積和)
     - [0を含めない場合](#0を含めない場合)
     - [0を含める場合](#0を含める場合)
+    - [三次元の累積和](#三次元の累積和)
   - [素数列挙](#素数列挙)
   - [セグメント木](#セグメント木)
 
@@ -46,7 +47,7 @@ print_list(Ans)
 ```
 
 ## 順序付きソート
-[SortedSet.py](src/SortedSet.py)
+[SortedSet.py](https://github.com/tatyam-prime/SortedSet)
 
 
 ## 二分探索

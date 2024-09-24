@@ -38,7 +38,7 @@ oj t -c "python main.py" -d ./tests/
 ```
 
 ## テンプレ
-[main.py](src/main.py)
+[main.py](https://raw.githubusercontent.com/PenguinCabinet/my-atcoder-library/refs/heads/main/src/main.py?token=GHSAT0AAAAAACWAAIRAPROHJ3D32IEPKHOYZXSEFLA)
 
 ## スペースに分けて、配列を一行で表示
 ```python

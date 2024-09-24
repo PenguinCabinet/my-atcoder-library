@@ -111,7 +111,7 @@ def heappop_max(a):
     return -heapq.heappop(a)
 
 def heappush_max(a,x):
-    return heapq.heappush(a,-2)
+    return heapq.heappush(a,-x)
 
 a = [1,6,8,0,-1]
 heapq.heapify(a)

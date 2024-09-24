@@ -38,7 +38,7 @@ oj t -c "python main.py" -d ./tests/
 ```
 
 ## テンプレ
-[main.py](https://raw.githubusercontent.com/PenguinCabinet/my-atcoder-library/refs/heads/main/src/main.py?token=GHSAT0AAAAAACWAAIRAPROHJ3D32IEPKHOYZXSEFLA)
+[main.py](src/main.py)
 
 ## スペースに分けて、配列を一行で表示
 ```python
@@ -251,6 +251,41 @@ sub_sum=list(itertools.accumulate(diff))
 ```python
 sub_sum=[0]+list(itertools.accumulate(diff))
 ```
+
+### 三次元の累積和
+```python
+
+    sub_sum_data = [
+        [[0 for _ in range(N + 1)] for _ in range(N + 1)] for _ in range(N + 1)
+    ]
+    for x in range(N):
+        for y in range(N):
+            for z in range(N):
+                sub_sum_data[x + 1][y + 1][z + 1] = (
+                    sub_sum_data[x + 1][y + 1][z]
+                    + sub_sum_data[x + 1][y][z + 1]
+                    + sub_sum_data[x][y + 1][z + 1]
+                    - sub_sum_data[x + 1][y][z]
+                    - sub_sum_data[x][y + 1][z]
+                    - sub_sum_data[x][y][z + 1]
+                    + sub_sum_data[x][y][z]
+                    + diff[x][y][z]
+                )
+
+        print(
+            (
+                sub_sum_data[Rx][Ry][Rz]
+                - sub_sum_data[Lx][Ry][Rz]
+                - sub_sum_data[Rx][Ly][Rz]
+                - sub_sum_data[Rx][Ry][Lz]
+                + sub_sum_data[Lx][Ly][Rz]
+                + sub_sum_data[Lx][Ry][Lz]
+                + sub_sum_data[Rx][Ly][Lz]
+                - sub_sum_data[Lx][Ly][Lz]
+            )
+        )
+```
+
 
 ## 素数列挙
 ```python

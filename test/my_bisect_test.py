@@ -1,8 +1,4 @@
-import sys
-import os
-
-sys.path.append(os.path.join(os.getcwd(), "src"))
-from main import *
+from _test_common import *
 
 test_data = [1, 3, 5]
 assert bisect_index(test_data, 3) == 1

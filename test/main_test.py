@@ -1,9 +1,4 @@
-import sys
-import os
-import io
-
-sys.path.append(os.path.join(os.getcwd(), "src"))
-from main import *
+from _test_common import *
 
 assert copy.deepcopy(1) == 1
 assert make_arr(3) == [0, 0, 0]

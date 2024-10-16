@@ -1,10 +1,4 @@
-import atcoder
-import atcoder.segtree
-import sys
-import os
-
-sys.path.append(os.path.join(os.getcwd(), "src"))
-from main import *
+from _test_common import *
 
 
 tree = atcoder.segtree.SegTree(lambda a, b: a + b, 0, [1, 2, 3, 4])

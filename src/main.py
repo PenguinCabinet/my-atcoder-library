@@ -5,7 +5,9 @@ import math
 import collections
 import heapq
 import atcoder
+import atcoder.segtree
 import copy
+from typing import *
 
 sys.setrecursionlimit(3 * (10**8))
 INF = 1 << 63
@@ -428,6 +430,55 @@ class SortedMultiset(Generic[T]):
                 return ans + bisect_right(a, x)
             ans += len(a)
         return ans
+
+
+class graph_edge_t:
+    def __init__(self, to_node: int, w: int):
+        self.w = w
+        self.to_node = to_node
+
+    def __eq__(self, value: int):
+        return self.to_node == self.to_node and self.w == value.w
+
+    def __str__(self):
+        return f"To_node:{self.to_node} W:{self.w}"
+
+
+class graph_t:
+    def __init__(self, N: int):
+        self.G: list[graph_edge_t] = [[] for i in range(N)]
+
+    def add(self, from_node: int, to_node: int, w: int = 1) -> None:
+        self.G[from_node].append(graph_edge_t(to_node, w))
+
+    def list_edges(self, from_node: int) -> list[graph_edge_t]:
+        return self.G[from_node]
+
+
+def BFS(
+    start_node: int,
+    G: graph_t,
+    node_func: Callable[[int], None],
+    edge_func: Callable[[int, int, graph_edge_t], None],
+    visited: set = set(),
+):
+    if start_node in visited:
+        return
+
+    Q = collections.deque()
+    Q.append(start_node)
+    visited.add(start_node)
+    while len(Q) > 0:
+        node = Q.pop()
+        if node_func is not None:
+            node_func(node)
+
+        for edge in G.list_edges(node):
+            if edge.to_node not in visited:
+                if edge_func is not None:
+                    edge_func(edge.to_node, edge)
+                visited.add(edge.to_node)
+                Q.appendleft(edge.to_node)
 
 
 def main():

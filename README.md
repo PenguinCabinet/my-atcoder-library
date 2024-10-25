@@ -19,6 +19,7 @@
   - [累積和](#累積和)
     - [0を含めない場合](#0を含めない場合)
     - [0を含める場合](#0を含める場合)
+    - [文字列の並び替え(重複を削除)](#文字列の並び替え重複を削除)
     - [三次元の累積和](#三次元の累積和)
   - [素数列挙](#素数列挙)
   - [セグメント木](#セグメント木)
@@ -252,6 +253,18 @@ sub_sum=list(itertools.accumulate(diff))
 ```python
 sub_sum=[0]+list(itertools.accumulate(diff))
 ```
+
+### 文字列の並び替え(重複を削除)
+```python
+more_itertools.distinct_permutations(S,len(S))
+```
+下と同一のもので、下より早い。
+下は使わない。**上を使う！**
+```python
+set(itertools.permutations(S, len(S)))
+```
+
+
 
 ### 三次元の累積和
 ```python

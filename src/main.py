@@ -1,5 +1,6 @@
 import sys
 import itertools
+import more_itertools
 import bisect
 import math
 import collections
@@ -64,9 +65,8 @@ def bisect_index(a, x):
     return None
 
 
-# Function details by https://github.com/tatyam-prime/SortedSet/blob/main/SortedSet.py
 def bisect_find_lt(a, x):
-    "Find the largest element < x, or None if it doesn't exist"
+    "Get the index of the largest element < x, or None if it doesn't exist"
     i = bisect.bisect_left(a, x)
     if i:
         return i - 1
@@ -74,7 +74,7 @@ def bisect_find_lt(a, x):
 
 
 def bisect_find_le(a, x):
-    "Find the largest element <= x, or None if it doesn't exist."
+    "Get the index of the largest element <= x, or None if it doesn't exist."
     i = bisect.bisect_right(a, x)
     if i:
         return i - 1
@@ -82,7 +82,7 @@ def bisect_find_le(a, x):
 
 
 def bisect_find_gt(a, x):
-    "Find the smallest element > x, or None if it doesn't exist."
+    "Get the index of the smallest element > x, or None if it doesn't exist."
     i = bisect.bisect_right(a, x)
     if i != len(a):
         return i
@@ -90,7 +90,7 @@ def bisect_find_gt(a, x):
 
 
 def bisect_find_ge(a, x):
-    "Find the smallest element >= x, or None if it doesn't exist."
+    "Get the index of the smallest element >= x, or None if it doesn't exist."
     i = bisect.bisect_left(a, x)
     if i != len(a):
         return i
@@ -433,9 +433,10 @@ class SortedMultiset(Generic[T]):
 
 
 class graph_edge_t:
-    def __init__(self, to_node: int, w: int):
+    def __init__(self, to_node: int, w: int, edge_id: int):
         self.w = w
         self.to_node = to_node
+        self.edge_id = edge_id
 
     def __eq__(self, value: int):
         return self.to_node == self.to_node and self.w == value.w
@@ -448,8 +449,8 @@ class graph_t:
     def __init__(self, N: int):
         self.G: list[graph_edge_t] = [[] for i in range(N)]
 
-    def add(self, from_node: int, to_node: int, w: int = 1) -> None:
-        self.G[from_node].append(graph_edge_t(to_node, w))
+    def add(self, from_node: int, to_node: int, w: int = 1, edge_id=0) -> None:
+        self.G[from_node].append(graph_edge_t(to_node, w, edge_id))
 
     def list_edges(self, from_node: int) -> list[graph_edge_t]:
         return self.G[from_node]
@@ -458,27 +459,45 @@ class graph_t:
 def BFS(
     start_node: int,
     G: graph_t,
-    node_func: Callable[[int], None],
-    edge_func: Callable[[int, int, graph_edge_t], None],
-    visited: set = set(),
+    node_func: Callable[[int, bool], None],
+    edge_func: Callable[[int, int, graph_edge_t, bool, bool], None],
+    Is_node_visited_once: bool,
+    Is_edge_visited_once: bool,
+    node_visited: set = set(),
+    edge_visited: set = set(),
 ):
-    if start_node in visited:
+    if start_node in node_visited:
         return
 
     Q = collections.deque()
-    Q.append(start_node)
-    visited.add(start_node)
+    Q.append((start_node, 0))
+
     while len(Q) > 0:
-        node = Q.pop()
+        node, dist = Q.pop()
         if node_func is not None:
-            node_func(node)
+            node_func(node, dist, node not in node_visited)
+        node_visited.add(node)
 
         for edge in G.list_edges(node):
-            if edge.to_node not in visited:
-                if edge_func is not None:
-                    edge_func(edge.to_node, edge)
-                visited.add(edge.to_node)
-                Q.appendleft(edge.to_node)
+            if edge.edge_id in edge_visited:
+                if Is_edge_visited_once:
+                    continue
+            if edge.to_node in node_visited:
+                if Is_node_visited_once:
+                    continue
+            if edge_func is not None:
+                edge_func(
+                    node,
+                    dist,
+                    edge,
+                    edge.to_node not in node_visited,
+                    edge.edge_id not in edge_visited,
+                )
+
+            node_visited.add(edge.to_node)
+            edge_visited.add(edge.edge_id)
+
+            Q.appendleft((edge.to_node, dist + 1))
 
 
 def main():

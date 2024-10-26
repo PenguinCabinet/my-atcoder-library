@@ -69,41 +69,41 @@ def check_sub_str(s1, s2):
     return s1 in s2
 
 
-def bisect_index(a, x):
+def bisect_index(a, x, key=lambda v: v):
     "Locate the leftmost value exactly equal to x"
-    i = bisect.bisect_left(a, x)
+    i = bisect.bisect_left(a, x, key=key)
     if i != len(a) and a[i] == x:
         return i
     return None
 
 
-def bisect_find_lt(a, x):
+def bisect_find_lt(a, x, key=lambda v: v):
     "Get the index of the largest element < x, or None if it doesn't exist"
-    i = bisect.bisect_left(a, x)
+    i = bisect.bisect_left(a, x, key=key)
     if i:
         return i - 1
     return None
 
 
-def bisect_find_le(a, x):
+def bisect_find_le(a, x, key=lambda v: v):
     "Get the index of the largest element <= x, or None if it doesn't exist."
-    i = bisect.bisect_right(a, x)
+    i = bisect.bisect_right(a, x, key=key)
     if i:
         return i - 1
     return None
 
 
-def bisect_find_gt(a, x):
+def bisect_find_gt(a, x, key=lambda v: v):
     "Get the index of the smallest element > x, or None if it doesn't exist."
-    i = bisect.bisect_right(a, x)
+    i = bisect.bisect_right(a, x, key=key)
     if i != len(a):
         return i
     return None
 
 
-def bisect_find_ge(a, x):
+def bisect_find_ge(a, x, key=lambda v: v):
     "Get the index of the smallest element >= x, or None if it doesn't exist."
-    i = bisect.bisect_left(a, x)
+    i = bisect.bisect_left(a, x, key=key)
     if i != len(a):
         return i
     return None

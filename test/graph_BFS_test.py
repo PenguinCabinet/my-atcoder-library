@@ -18,10 +18,10 @@ BFS_test_nodes_index = 0
 BFS_test_nodes = [0, 1, 2, 3, 4, 5, 6, 7]
 
 
-def node_func(node):
+def node_func(node, dist, Is_node_visited_once):
     global BFS_test_nodes_index
     assert node == BFS_test_nodes[BFS_test_nodes_index]
     BFS_test_nodes_index += 1
 
 
-BFS(0, G, node_func, None)
+BFS(0, G, node_func, None, True, False)

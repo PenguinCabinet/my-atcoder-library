@@ -35,6 +35,18 @@ def input_list(func=str):
     return result
 
 
+def input_lists(N, func=str):
+    result = []
+    for _ in range(N):
+        if isinstance(func, list):
+            result.append([func[i](e) for i, e in enumerate(input().split())])
+        else:
+            result.append([func(e) for i, e in enumerate(input().split())])
+    result = [[result[j][i] for j in range(N)] for i in range(len(result[0]))]
+
+    return tuple(result)
+
+
 def input_lists_int(N):
     ret = []
     for _ in range(N):
@@ -433,7 +445,7 @@ class SortedMultiset(Generic[T]):
 
 
 class graph_edge_t:
-    def __init__(self, to_node: int, w: int, edge_id: int):
+    def __init__(self, to_node: int, w: int, edge_id: int = 0):
         self.w = w
         self.to_node = to_node
         self.edge_id = edge_id
@@ -448,9 +460,11 @@ class graph_edge_t:
 class graph_t:
     def __init__(self, N: int):
         self.G: list[graph_edge_t] = [[] for i in range(N)]
+        self.edge_id_count: int = 0
 
-    def add(self, from_node: int, to_node: int, w: int = 1, edge_id=0) -> None:
-        self.G[from_node].append(graph_edge_t(to_node, w, edge_id))
+    def add(self, from_node: int, to_node: int, w: int = 1) -> None:
+        self.G[from_node].append(graph_edge_t(to_node, w, self.edge_id_count))
+        self.edge_id_count += 1
 
     def list_edges(self, from_node: int) -> list[graph_edge_t]:
         return self.G[from_node]
@@ -459,7 +473,7 @@ class graph_t:
 def BFS(
     start_node: int,
     G: graph_t,
-    node_func: Callable[[int, bool], None],
+    node_func: Callable[[int, int, bool], None],
     edge_func: Callable[[int, int, graph_edge_t, bool, bool], None],
     Is_node_visited_once: bool,
     Is_edge_visited_once: bool,

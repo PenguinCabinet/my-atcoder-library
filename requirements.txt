@@ -1,1 +1,2 @@
 git+https://github.com/not522/ac-library-python
+more_itertools

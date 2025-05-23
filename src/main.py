@@ -7,8 +7,11 @@ import collections
 import heapq
 import atcoder
 import atcoder.segtree
+from atcoder.modint import *
 import copy
 from typing import *
+import string
+from abc import ABC, abstractmethod
 
 sys.setrecursionlimit(3 * (10**8))
 INF = 1 << 63
@@ -69,44 +72,86 @@ def check_sub_str(s1, s2):
     return s1 in s2
 
 
-def bisect_index(a, x, key=lambda v: v):
+def bisect_index(a, x, key=lambda v: v, lo=0, hi=None):
     "Locate the leftmost value exactly equal to x"
-    i = bisect.bisect_left(a, x, key=key)
-    if i != len(a) and a[i] == x:
+    if hi is None:
+        hi = len(a)
+    i = bisect.bisect_left(a, x, key=key, lo=lo, hi=hi)
+    if i != len(a) and key(a[i]) == x:
         return i
     return None
 
 
-def bisect_find_lt(a, x, key=lambda v: v):
+def bisect_find_lt(a, x, key=lambda v: v, lo=0, hi=None):
     "Get the index of the largest element < x, or None if it doesn't exist"
-    i = bisect.bisect_left(a, x, key=key)
+    if hi is None:
+        hi = len(a)
+    i = bisect.bisect_left(a, x, key=key, lo=lo, hi=hi)
     if i:
-        return i - 1
+        result = i - 1
+        if lo <= result and result < hi:
+            return result
     return None
 
 
-def bisect_find_le(a, x, key=lambda v: v):
+def bisect_find_le(a, x, key=lambda v: v, lo=0, hi=None):
     "Get the index of the largest element <= x, or None if it doesn't exist."
-    i = bisect.bisect_right(a, x, key=key)
+    if hi is None:
+        hi = len(a)
+    i = bisect.bisect_right(a, x, key=key, lo=lo, hi=hi)
     if i:
-        return i - 1
+        result = i - 1
+        if lo <= result and result < hi:
+            return result
     return None
 
 
-def bisect_find_gt(a, x, key=lambda v: v):
+def bisect_find_gt(a, x, key=lambda v: v, lo=0, hi=None):
     "Get the index of the smallest element > x, or None if it doesn't exist."
-    i = bisect.bisect_right(a, x, key=key)
+    if hi is None:
+        hi = len(a)
+    i = bisect.bisect_right(a, x, key=key, lo=lo, hi=hi)
     if i != len(a):
         return i
     return None
 
 
-def bisect_find_ge(a, x, key=lambda v: v):
+def bisect_find_ge(a, x, key=lambda v: v, lo=0, hi=None):
     "Get the index of the smallest element >= x, or None if it doesn't exist."
-    i = bisect.bisect_left(a, x, key=key)
+    if hi is None:
+        hi = len(a)
+    i = bisect.bisect_left(a, x, key=key, lo=lo, hi=hi)
     if i != len(a):
         return i
     return None
+
+
+def __bisect_func_find1(min_arg, max_arg, func, x):
+    L = min_arg - 1
+    R = max_arg
+    m = 0
+    while R - L > 1:
+        m = (L + R) // 2
+
+        result = func(m)
+
+        if result >= x:
+            R = m
+        else:
+            L = m
+    return L, R
+
+
+def bisect_func_find_ge(min_arg, max_arg, func, x):
+    "Get the smallest result >= x."
+    L, R = __bisect_func_find1(min_arg, max_arg, func, x)
+    return R
+
+
+def bisect_func_find_lt(min_arg, max_arg, func, x):
+    "Get the largest result < x."
+    L, R = __bisect_func_find1(min_arg, max_arg, func, x)
+    return L
 
 
 # https://github.com/tatyam-prime/SortedSet/blob/main/SortedSet.py
@@ -457,61 +502,116 @@ class graph_edge_t:
         return f"To_node:{self.to_node} W:{self.w}"
 
 
-class graph_t:
+class Base_graph_t(ABC):
+    def __init__(self):
+        pass
+
+    @abstractmethod
+    def list_edges(self, from_node):
+        pass
+
+
+class graph_t(Base_graph_t):
     def __init__(self, N: int):
-        self.G: list[graph_edge_t] = [[] for i in range(N)]
+        self.G: dict[list[graph_edge_t]] = [[] for _ in range(N)]
+        self.N: int = N
         self.edge_id_count: int = 0
 
-    def add(self, from_node: int, to_node: int, w: int = 1) -> None:
-        self.G[from_node].append(graph_edge_t(to_node, w, self.edge_id_count))
-        self.edge_id_count += 1
+    def add(
+        self,
+        from_node: int,
+        to_node: Union[int, None] = None,
+        w: int = 1,
+        edge_id=None,
+    ) -> None:
+        if edge_id is None:
+            edge_id = self.edge_id_count
+            self.edge_id_count += 1
+        if to_node is not None:
+            self.G[from_node].append(
+                graph_edge_t(
+                    to_node,
+                    w,
+                    edge_id,
+                )
+            )
 
     def list_edges(self, from_node: int) -> list[graph_edge_t]:
         return self.G[from_node]
 
 
-def BFS(
-    start_node: int,
-    G: graph_t,
-    node_func: Callable[[int, int, bool], None],
-    edge_func: Callable[[int, int, graph_edge_t, bool, bool], None],
-    Is_node_visited_once: bool,
-    Is_edge_visited_once: bool,
-    node_visited: set = set(),
-    edge_visited: set = set(),
-):
-    if start_node in node_visited:
-        return
+MapStr_to_graph_diagonal_move = [
+    [(dy, dx) for dx in range(-1, 2) if not (dx == 0 and dy == 0)]
+    for dy in range(-1, 2)
+]
+MapStr_to_graph_xy_move = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
-    Q = collections.deque()
-    Q.append((start_node, 0))
 
+class MapStr_graph_t(Base_graph_t):
+    def __init__(self, S, H, W, allow_str, dyx):
+        self.S = S
+        self.H = H
+        self.W = W
+        self.dyx = dyx
+        self.allow_str = allow_str
+
+    def list_edges(self, from_node: int) -> list[graph_edge_t]:
+        y, x = from_node
+        result = []
+        for dy, dx in self.dyx:
+            if 0 <= y + dy and y + dy < self.H and 0 <= x + dx and x + dx < self.W:
+                if self.S[y + dy][x + dx] in self.allow_str:
+                    result.append(
+                        graph_edge_t((y + dy, x + dx), 1, self.W * (y + dy) + x + dx)
+                    )
+        return result
+
+
+
+
+def Dijkstra(start_node, G):
+    decided = [False for i in range(G.N)]
+    dist = [INF for i in range(G.N)]
+
+    dist[start_node] = 0
+
+    Q = []
+    heapq.heappush(Q, (dist[start_node], start_node))
     while len(Q) > 0:
-        node, dist = Q.pop()
-        if node_func is not None:
-            node_func(node, dist, node not in node_visited)
-        node_visited.add(node)
+        _, node = heapq.heappop(Q)
+        if decided[node]:
+            continue
+        decided[node] = True
 
         for edge in G.list_edges(node):
-            if edge.edge_id in edge_visited:
-                if Is_edge_visited_once:
-                    continue
-            if edge.to_node in node_visited:
-                if Is_node_visited_once:
-                    continue
-            if edge_func is not None:
-                edge_func(
-                    node,
-                    dist,
-                    edge,
-                    edge.to_node not in node_visited,
-                    edge.edge_id not in edge_visited,
-                )
+            if dist[edge.to_node] > dist[node] + edge.w:
+                dist[edge.to_node] = dist[node] + edge.w
+                heapq.heappush(Q, (dist[edge.to_node], edge.to_node))
 
-            node_visited.add(edge.to_node)
-            edge_visited.add(edge.edge_id)
+    return dist
 
-            Q.appendleft((edge.to_node, dist + 1))
+
+def RunLengthEncoding(v: list[int]) -> list[list[int, int]]:
+    result = []
+    for e in itertools.groupby(v):
+        result.append([e[0], len(list(e[1]))])
+    return result
+
+
+def Eratosthenes(n):
+    isprime = [True for _ in range(n)]
+    result = []
+    isprime[0] = False
+    isprime[1] = False
+    for i in range(2, n):
+        if isprime[i]:
+            result.append(i)
+            j = i * 2
+            while j < n:
+                isprime[j] = False
+                j += i
+
+    return result
 
 
 def main():
